@@ -58,7 +58,7 @@ public class Hoved extends JFrame {
 	 * Constructor
 	 */
 	Hoved() {
-		super("Archerymanager (Beta version 0.0)");
+		super("ClubManager (Version 1.0)");
 		setLayout(new BorderLayout());
 
 		/*
