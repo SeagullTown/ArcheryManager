@@ -1,7 +1,6 @@
 package model;
 
-import gui.UpdateFormEvent;
-
+import java.awt.GridLayout;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,47 +15,76 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+import org.apache.commons.dbcp2.BasicDataSource;
+
+import gui.UpdateFormEvent;
 
 /*
  * All storing of data should be in this class.
  */
 
+
+/*
+ * TODO: implement connection pooling, this breaks too easily.
+ */
 public class Database {
+	
+	private static final BasicDataSource dataSource = new BasicDataSource();
+	private Preferences databasePrefs;
 
 	private List<Medlem> medlemsListe;
 	private List<Kontingent> kontingentListe;
 	private String dbPass;
+	private boolean firstStart;
+	
+	static {
+		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+		
+		
+	}
+	
 	
 	/*
 	 * debug arrays for testing the statistics function of the program.
 	 */
 	private double[][] medlemsAntall;
 	private double[][] stotteMedlemAntall;
-
-	private Connection con;
+	
+	
+	//the connection
+	
+	//private Connection con;
 
 	public Database() {
 		
-
+		databasePrefs = Preferences.userRoot().node("club");
 		medlemsListe = new LinkedList<Medlem>();
 		kontingentListe = new LinkedList<Kontingent>();
 		/*
-		 * TODO: debug arrays.
+		 * TODO: debug arrays. not actual data.
 		 */
 		medlemsAntall = new double[][]{{2009,2010,2011,2012,2013,2014,2015},{50,55,50,60,61,70,72}};
 		stotteMedlemAntall = new double[][]{{2009,2010,2011,2012,2013,2014,2015},{6,8,9,8,8,7,8}};
 		
+		if(databasePrefs.get("databaseURL", "No").equals("No") || databasePrefs.get("databaseUser", "no").equals("no")) {
+			firstStart = true;
+		}
 		
+	}
+	public Connection getConnection() throws SQLException {
+		return dataSource.getConnection();
 	}
 	
 	
@@ -70,57 +98,87 @@ public class Database {
 		panel.add(label);
 		panel.add(passField);
 		String[] options = new String[]{"OK", "Cancel"};
+		
 		int option = JOptionPane.showOptionDialog(null, panel, "Skriv inn passord",
 		                         JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
 		                         null, options, options[1]);
 		if(option == 0) {// pressing OK button
 		    char[] password = passField.getPassword();
+		    System.out.println("ok pressed");
 		    dbPass = new String(password);
 		    return 0;
 		} else { // pressing cancel or quitbutton
 			return 1;
 		}
 	}
+	
+	
 
 	public void connect() throws Exception {
-		if (con != null)
-			return;
-
-		try {
+		if (firstStart) {
+			JPanel panel = new JPanel();
+			panel.setLayout(new GridLayout(3, 2));
+			JLabel urlLabel = new JLabel("Database URL:");
+			JLabel UserLabel = new JLabel("Database User:");
+			JLabel passLabel = new JLabel("Database Password:");
+			
+			JTextField urlField = new JTextField(15);
+			JTextField  userField = new JTextField(15);
+			JPasswordField passField = new JPasswordField(15);
+			
+			panel.add(urlLabel);
+			panel.add(urlField);
+			panel.add(UserLabel);
+			panel.add(userField);
+			panel.add(passLabel);
+			panel.add(passField);
+			panel.repaint();
+			
+			String[] options = new String[]{"OK,","Cancel"};
+			
+			int option = JOptionPane.showOptionDialog(null, panel, "Fyll inn database info",
+                    JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+                    null, options, options[1]);
+			if(option == 0) {// pressing OK button
+				dataSource.setUrl("jdbc:mysql://" + urlField.getText());
+				dataSource.setUsername(userField.getText());
+				dataSource.setPassword(new String(passField.getPassword()));
+			} else if(option == 1) {
+				System.out.println("connection data cancelled");
+			}
+			
+			databasePrefs.put("databaseURL", urlField.getText());
+			databasePrefs.put("databaseUser", userField.getText());
+			
+			
+			
+		} else {
+			
+			dataSource.setUrl("jdbc:mysql://" + databasePrefs.get("databaseURL","no"));
+			dataSource.setUsername(databasePrefs.get("databaseUser","no" ));
+			
+			
 			
 			if(retrievePassword() == 1) {
-				System.out.println("connection cancelled");
-				return;
+			System.out.println("connection cancelled");
+			return;
 			}
-			
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			throw new Exception("Driver not Found");
+			dataSource.setPassword(dbPass);
 		}
 
-		String serverURL = "jdbc:mysql://seagulltown.mysql.domeneshop.no:3306/seagulltown";
 		
+
 		
-		/*
-		 * the username will have to be changed, current user have too many privileges.
-		 */
-		con = DriverManager.getConnection(serverURL, "seagulltown", dbPass);
 
 	}
-
-	public void disconnect() {
-		if (con != null) {
-			try {
-				con.close();
-			} catch (SQLException e) {
-				System.out.println("Can't close connection");
-			}
-		}
-	}
+	
+	
 	
 	
 	// TODO: all sql statements have to be reviewed and changed due to changes in how members are stored and how the databases are handled.
 	public void save() throws SQLException {
+		
+		Connection con = getConnection();
 		
 		try {
 			String checkSql = "select count(*) as count from medlemsListe where ID=?";
@@ -202,13 +260,20 @@ public class Database {
 			updateStatement.close();
 			insertStatement.close();
 			checkStmt.close();
+			try {
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException sqlException) {
+				sqlException.printStackTrace();
+			}
 		} catch (NullPointerException e) {
 			System.out.println("nullpointer after trying to use database, no connection to the database");
 		}
 	}
 	
 	public void load() throws SQLException {
-		
+		Connection con = getConnection();
 		medlemsListe.clear();
 		
 		String sql = "select ID, for_navn, etter_navn, f_dato, telefon, e_mail, adresse, post_nr, sex, kont_klasse, betalt from medlemsListe order by for_navn";
@@ -255,6 +320,14 @@ public class Database {
 		
 		results.close();
 		selectStatement.close();
+		try {
+			if (con != null) {
+				con.close();
+			}
+		} catch (SQLException sqlException) {
+			sqlException.printStackTrace();
+		}
+		
 		} catch (SQLException e) {
 			System.out.println("failed to connect");
 		} catch (NullPointerException e1) {
@@ -280,7 +353,7 @@ public class Database {
 	}
 
 	public void removeMedlem(String firstName,String lastName) throws SQLException {
-		
+		Connection con = getConnection();
 		
 		for(Medlem medlem: medlemsListe) {
 			if(medlem.getForNavn().equals(firstName) && medlem.getEtterNavn().equals(lastName)) {
@@ -300,10 +373,13 @@ public class Database {
 			}
 		}
 		
-		
-		
-		
-		
+		try {
+			if (con != null) {
+				con.close();
+			}
+		} catch (SQLException sqlException) {
+			sqlException.printStackTrace();
+		}
 		//deletes from sql database
 		
 		

@@ -114,9 +114,11 @@ public class Controller {
 		db.connect();
 	}
 	
+	/*
 	public void disconnect() {
 		db.disconnect();
 	}
+	*/
 	
 	
 	/*
