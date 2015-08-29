@@ -189,7 +189,7 @@ public class Database {
 			
 			String updateSql = "update medlemsListe set for_navn=?, etter_navn=?,f_dato=?, telefon=?, e_mail=?, adresse=?, post_nr=?, sex=?, Kont_klasse=?, betalt=? where ID=?";
 			PreparedStatement updateStatement = con.prepareStatement(updateSql);
-			//System.out.println("før forløkke");
+			//System.out.println("fÃ¸r forlÃ¸kke");
 			for (Medlem medlem: medlemsListe) {
 				
 				int ID = medlem.getId();
@@ -412,7 +412,7 @@ public class Database {
 			kontCat = KontingentCategory.member;
 			payment =true;
 			
-		} else if (e.getKontCat().equals("Støttemedlem")) {
+		} else if (e.getKontCat().equals("StÃ¸ttemedlem")) {
 			kontCat = KontingentCategory.supportingMember;
 			payment = true;
 			
