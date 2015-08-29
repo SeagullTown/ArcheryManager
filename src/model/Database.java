@@ -9,7 +9,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,9 +35,7 @@ import gui.UpdateFormEvent;
  */
 
 
-/*
- * TODO: implement connection pooling, this breaks too easily.
- */
+
 public class Database {
 	
 	private static final BasicDataSource dataSource = new BasicDataSource();
@@ -72,11 +69,11 @@ public class Database {
 		databasePrefs = Preferences.userRoot().node("club");
 		medlemsListe = new LinkedList<Medlem>();
 		kontingentListe = new LinkedList<Kontingent>();
-		/*
-		 * TODO: debug arrays. not actual data.
-		 */
-		medlemsAntall = new double[][]{{2009,2010,2011,2012,2013,2014,2015},{50,55,50,60,61,70,72}};
-		stotteMedlemAntall = new double[][]{{2009,2010,2011,2012,2013,2014,2015},{6,8,9,8,8,7,8}};
+		
+		
+		medlemsAntall = new double[][]{{2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015},{93,92,105,86,88,101,78,80,90,90,78,102}};
+		
+		stotteMedlemAntall = new double[][]{{2009,2010,2011,2012,2013,2014,2015},{0,0,0,0,0,0,0}};
 		
 		if(databasePrefs.get("databaseURL", "No").equals("No") || databasePrefs.get("databaseUser", "no").equals("no")) {
 			firstStart = true;
@@ -165,7 +162,7 @@ public class Database {
 			}
 			dataSource.setPassword(dbPass);
 		}
-
+		
 		
 
 		
@@ -175,7 +172,7 @@ public class Database {
 	
 	
 	
-	// TODO: all sql statements have to be reviewed and changed due to changes in how members are stored and how the databases are handled.
+	
 	public void save() throws SQLException {
 		
 		Connection con = getConnection();
@@ -260,6 +257,8 @@ public class Database {
 			updateStatement.close();
 			insertStatement.close();
 			checkStmt.close();
+			
+			//closing the connection letting it back into the pool.
 			try {
 				if (con != null) {
 					con.close();
@@ -412,7 +411,7 @@ public class Database {
 			kontCat = KontingentCategory.member;
 			payment =true;
 			
-		} else if (e.getKontCat().equals("StÃ¸ttemedlem")) {
+		} else if (e.getKontCat().equals("Støttemedlem")) {
 			kontCat = KontingentCategory.supportingMember;
 			payment = true;
 			
@@ -427,7 +426,7 @@ public class Database {
 		try {
 			save();
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
+			
 			e1.printStackTrace();
 		}
 		
