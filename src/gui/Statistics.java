@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.text.DecimalFormat;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -73,6 +74,8 @@ public class Statistics extends JPanel {
 		add(createOverTimeChart());
 		
 		
+		
+		
 	}
 	
 	
@@ -103,9 +106,14 @@ public class Statistics extends JPanel {
 		//changes the numbers so that they are shown on the chart without the decimals.
 		ValueAxis rangeAxis = xyPlot.getRangeAxis();
 		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-		
+		/*
 		ValueAxis domainAxis = xyPlot.getDomainAxis();
 		domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+		*/
+		
+		final NumberAxis domainAxis = (NumberAxis)timeChart.getXYPlot().getDomainAxis();
+		final DecimalFormat format = new DecimalFormat("####");
+		domainAxis.setNumberFormatOverride(format);  
 		
 		/*
 		 * creates shapes at the datapoints, makes it easier to look at.
@@ -121,14 +129,12 @@ public class Statistics extends JPanel {
 		
 		ChartPanel timeChartPanel = new ChartPanel(timeChart);
 		timeChartPanel.setMouseWheelEnabled(true);
+		
 		return timeChartPanel;
 	}
 	
 	/*
 	 * creating the panels
-	 * 
-	 * TODO: might want to change this to gridbagLayout. looks like the timechart could benefit visually from a bigger panel size.
-	 * 			can't tell before i have implemented the other statistics for the demography panel.
 	 */
 	public void createPanels() {
 		
