@@ -48,7 +48,7 @@ public class Hoved extends JFrame {
 	private Preferences prefs;
 	private boolean regVisible = false;
 	private boolean tableVisible = false;
-	
+
 	private boolean editMemberVisible = false;
 	private boolean demographyVisible = false;
 
@@ -76,19 +76,17 @@ public class Hoved extends JFrame {
 		toolbar = new ToolBar();
 		reg = new Reg();
 		tablepanel = new TablePanel();
-		
 
 		setJMenuBar(createMenuBar());
 		prefs = Preferences.userRoot().node("click");
 		controller = new Controller();
-		
 
 		/*
 		 * filling the members table.
 		 */
 		tablepanel.setData(controller.getMedlemmer());
-		demography = new Statistics(controller.getMedlemTall(),
-				controller.getMedlemStotte(),controller.getMedlemAntall(),controller.getSrKvinner(),controller.getSrMenn(),controller.getJrKvinner(),controller.getJrMenn());
+		demography = new Statistics(controller.getMedlemTall(), controller.getMedlemStotte(), controller.getMedlemAntall(),
+				controller.getSrKvinner(), controller.getSrMenn(), controller.getJrKvinner(), controller.getJrMenn());
 		/*
 		 * initializing utilities.
 		 */
@@ -102,8 +100,19 @@ public class Hoved extends JFrame {
 		 */
 		toolbar.setWindowChange(new WindowChange() {
 			public void setWindow(String text) {
+				
+				/*
+				 * switch case to handle panel display
+				switch(text) {
+					
+				case "menu": 
+				case "reg":
+				case "table":
+				case "statistics":
+				}
+				*/
 				if (text.equals("menu")) {
-					if(demographyVisible == true) {
+					if (demographyVisible == true) {
 						remove(demography);
 						demographyVisible = false;
 					}
@@ -111,11 +120,11 @@ public class Hoved extends JFrame {
 						remove(tablepanel);
 						tableVisible = false;
 					}
-					if(regVisible == true) {
+					if (regVisible == true) {
 						remove(reg);
 						regVisible = false;
 					}
-					if(editMemberVisible == true) {
+					if (editMemberVisible == true) {
 						remove(editPanel);
 						editMemberVisible = false;
 					}
@@ -147,39 +156,38 @@ public class Hoved extends JFrame {
 		 * Listener on the table
 		 */
 		tablepanel.setMedlemTableListener(new MedlemTableListener() {
-			public void rowDeleted(String firstName,String lastName) {
-				controller.removeRecord(firstName,lastName);
+			public void rowDeleted(String firstName, String lastName) {
+				controller.removeRecord(firstName, lastName);
 			}
 
 			public void rowEdit(int row) {
 				showEdit(row);
 			}
-			
-			
+
 			/*
 			 * (non-Javadoc)
-			 * @see gui.MedlemTableListener#copyRow(int)
-			 * method adds a row to the windows clipboard
+			 * 
+			 * @see gui.MedlemTableListener#copyRow(int) method adds a row to
+			 * the windows clipboard
 			 */
 			@Override
 			public void copyRow(int row) {
-				
-				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();	
+
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				String text = tablepanel.getText(row);
 				StringSelection selection = new StringSelection(text);
 				clipboard.setContents(selection, selection);
-				
-				
+
 			}
 
 			@Override
 			public void copySquare(String square) {
-				
+
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				StringSelection selection = new StringSelection(square);
 				clipboard.setContents(selection, selection);
 				System.out.println(square);
-				
+
 			}
 		});
 
@@ -205,7 +213,7 @@ public class Hoved extends JFrame {
 				demography.refreshData();
 			}
 		});
-		
+
 		demography.setGraphRefresh(new GraphRefresh() {
 			public void refresh() {
 				demography.setDataMedlemmer(controller.getMedlemTall());
@@ -226,7 +234,7 @@ public class Hoved extends JFrame {
 		 */
 		setToolbar();
 		showTable();
-		tableVisible = true; 
+		tableVisible = true;
 		/*
 		 * handles the closing of the application by disposing and running the
 		 * garbagecollector.
@@ -242,7 +250,7 @@ public class Hoved extends JFrame {
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
-				//controller.disconnect();
+				// controller.disconnect();
 				prefs.put("x", Integer.toString(getX()));
 				prefs.put("y", Integer.toString(getY()));
 				dispose();
@@ -261,22 +269,19 @@ public class Hoved extends JFrame {
 
 		setMinimumSize(new Dimension(600, 400));
 		setSize(900, 600);
-		
-		//using a listener to close the program so it can store and do a few last tasks before closing.
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); 
-		
+
+		// using a listener to close the program so it can store and do a few
+		// last tasks before closing.
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
 		setLocation(posX, posY);
-		setVisible(true);														
+		setVisible(true);
 		/*
 		 * methods that have to be initiated last
 		 */
 		tablepanel.setRowSort();
 		demography.refreshData();
-		
-		
-		
-		
-		
+
 	}
 
 	private void connect() {
@@ -307,9 +312,8 @@ public class Hoved extends JFrame {
 
 			controller.connect();
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(Hoved.this,
-					"Cannot connect to database.",
-					"Database Connection Problem", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(Hoved.this, "Cannot connect to database.", "Database Connection Problem",
+					JOptionPane.ERROR_MESSAGE);
 		}
 		// loading.setVisible(false);
 	}
@@ -317,13 +321,13 @@ public class Hoved extends JFrame {
 	public void setToolbar() {
 		add(toolbar, BorderLayout.NORTH);
 	}
-	
-	
+
 	/*
-	 * showReg will not remove table panel as they should both be visible at the same time.
+	 * showReg will not remove table panel as they should both be visible at the
+	 * same time.
 	 */
 	public void showReg() {
-		if(demographyVisible == true) {
+		if (demographyVisible == true) {
 			remove(demography);
 			demographyVisible = false;
 		}
@@ -343,12 +347,13 @@ public class Hoved extends JFrame {
 		revalidate();
 		repaint();
 	}
-	
+
 	/*
-	 * ShowTable will not remove registration panel as they should both be visible at the same time.
+	 * ShowTable will not remove registration panel as they should both be
+	 * visible at the same time.
 	 */
 	public void showTable() {
-		if(demographyVisible == true) {
+		if (demographyVisible == true) {
 			remove(demography);
 			demographyVisible = false;
 		}
@@ -364,15 +369,14 @@ public class Hoved extends JFrame {
 		revalidate();
 		repaint();
 	}
-	
-	
-	
+
 	/*
-	 * showEdit don't have hide/show function as its creation and info filling is handled after editmember is clicked in the program.
+	 * showEdit don't have hide/show function as its creation and info filling
+	 * is handled after editmember is clicked in the program.
 	 */
 	public void showEdit(int row) {
 		Medlem member;
-		if(demographyVisible == true) {
+		if (demographyVisible == true) {
 			remove(demography);
 			demographyVisible = false;
 		}
@@ -398,10 +402,12 @@ public class Hoved extends JFrame {
 		revalidate();
 		repaint();
 	}
-	
+
 	/*
-	 * showDemography vill first remove all other panels as it requires the entire panel for now, demography is dynamic and even if another
-	 * panel were to be shown west or east. north or south would warp the content too much.
+	 * showDemography vill first remove all other panels as it requires the
+	 * entire panel for now, demography is dynamic and even if another panel
+	 * were to be shown west or east. north or south would warp the content too
+	 * much.
 	 */
 	public void showDemography() {
 		if (regVisible == true) {
@@ -424,16 +430,15 @@ public class Hoved extends JFrame {
 			demographyVisible = true;
 		}
 
-		
 		revalidate();
 		repaint();
 	}
-	
+
 	/*
 	 * this method removes all the panels in this panel.
 	 */
 	public void removePanels() {
-		if(demographyVisible == true) {
+		if (demographyVisible == true) {
 			remove(demography);
 			demographyVisible = false;
 		}
@@ -441,11 +446,11 @@ public class Hoved extends JFrame {
 			remove(tablepanel);
 			tableVisible = false;
 		}
-		if(regVisible == true) {
+		if (regVisible == true) {
 			remove(reg);
 			regVisible = false;
 		}
-		if(editMemberVisible == true) {
+		if (editMemberVisible == true) {
 			remove(editPanel);
 			editMemberVisible = false;
 		}
@@ -467,7 +472,7 @@ public class Hoved extends JFrame {
 		JMenuItem exportDataItem = new JMenuItem("Export Data");
 		JMenuItem importDataItem = new JMenuItem("Import Data");
 		JMenuItem exitItem = new JMenuItem("Exit");
-		
+
 		fileMenu.add(connectDatabase);
 		fileMenu.add(refreshTable);
 		fileMenu.addSeparator();
@@ -495,8 +500,7 @@ public class Hoved extends JFrame {
 						controller.loadFromFile(fileChooser.getSelectedFile());
 						tablepanel.refresh();
 					} catch (IOException e1) {
-						JOptionPane.showMessageDialog(Hoved.this,
-								"Could not load data from file.", "Error",
+						JOptionPane.showMessageDialog(Hoved.this, "Could not load data from file.", "Error",
 								JOptionPane.ERROR_MESSAGE);
 					}
 				}
@@ -512,8 +516,7 @@ public class Hoved extends JFrame {
 					try {
 						controller.saveToFile(fileChooser.getSelectedFile());
 					} catch (IOException e1) {
-						JOptionPane.showMessageDialog(Hoved.this,
-								"Could not save data to file.", "Error",
+						JOptionPane.showMessageDialog(Hoved.this, "Could not save data to file.", "Error",
 								JOptionPane.ERROR_MESSAGE);
 					}
 				}
@@ -526,8 +529,7 @@ public class Hoved extends JFrame {
 		exitItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				int action = JOptionPane.showConfirmDialog(Hoved.this,
-						"Do you really want to exit the application?",
+				int action = JOptionPane.showConfirmDialog(Hoved.this, "Do you really want to exit the application?",
 						"Confirm Exit", JOptionPane.OK_CANCEL_OPTION);
 
 				if (action == JOptionPane.OK_OPTION) {
@@ -539,7 +541,7 @@ public class Hoved extends JFrame {
 				}
 			}
 		});
-		
+
 		connectDatabase.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
@@ -547,16 +549,14 @@ public class Hoved extends JFrame {
 					controller.load();
 					tablepanel.refresh();
 					demography.refreshData();
-				} catch (Exception e) {		
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 			}
-			
+
 		});
-		
-		
-		
+
 		refreshTable.addActionListener(new ActionListener() {
 
 			@Override
@@ -567,11 +567,11 @@ public class Hoved extends JFrame {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 				tablepanel.refresh();
-				
+
 			}
-			
+
 		});
 
 		/*

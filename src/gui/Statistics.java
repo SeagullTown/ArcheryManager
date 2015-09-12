@@ -111,6 +111,7 @@ public class Statistics extends JPanel {
 		domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 		*/
 		
+		//removes decimals from the x axis.
 		final NumberAxis domainAxis = (NumberAxis)timeChart.getXYPlot().getDomainAxis();
 		final DecimalFormat format = new DecimalFormat("####");
 		domainAxis.setNumberFormatOverride(format);  
