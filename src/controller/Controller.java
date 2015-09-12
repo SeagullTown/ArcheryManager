@@ -34,7 +34,7 @@ public class Controller {
 		String adresse = ev.getAdresse();
 		String postNr = ev.getPostNr();
 		
-		date = LocalDate.of(ev.getYear(),ev.getMonth(),ev.getDay());
+		date = ev.getfDate();
 		
 		Sex sex = null;
 
