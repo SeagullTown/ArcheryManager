@@ -1,14 +1,13 @@
 package gui;
 
 import java.util.EventObject;
+import java.time.LocalDate;
 
 public class FormEvent extends EventObject {
 	
 	private String forNavn;
 	private String etterNavn;
-	private int day;
-	private int month;
-	private int year;
+	private LocalDate fDate;
 	private String eMail;
 	private String tlf;
 	private String kontCat;
@@ -21,14 +20,12 @@ public class FormEvent extends EventObject {
 		
 	}
 	
-	FormEvent(Object source,String forNavn,String etterNavn, int day, int month, int year, String eMail,String tlf,String adresse,String postNr,String kontCat,String sex) {
+	FormEvent(Object source,String forNavn,String etterNavn, LocalDate fDate, String eMail,String tlf,String adresse,String postNr,String kontCat,String sex) {
 		super(source);
 		
 		this.forNavn = forNavn;
 		this.etterNavn = etterNavn;
-		this.day = day;
-		this.month = month;
-		this.year = year;
+		this.fDate = fDate;
 		this.eMail = eMail;
 		this.tlf = tlf;
 		this.adresse = adresse;
@@ -53,18 +50,6 @@ public class FormEvent extends EventObject {
 
 	public void setEtterNavn(String etterNavn) {
 		this.etterNavn = etterNavn;
-	}
-
-	public int getDay() {
-		return day;
-	}
-
-	public int getMonth() {
-		return month;
-	}
-
-	public int getYear() {
-		return year;
 	}
 
 	public String geteMail() {
@@ -110,6 +95,15 @@ public class FormEvent extends EventObject {
 	public String getSex() {
 		return sex;
 	}
+
+	public LocalDate getfDate() {
+		return fDate;
+	}
+
+	public void setfDate(LocalDate fDate) {
+		this.fDate = fDate;
+	}
+	
 	
 }
 	
