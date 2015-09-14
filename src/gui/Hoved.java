@@ -21,6 +21,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 import model.Medlem;
@@ -46,9 +47,10 @@ public class Hoved extends JFrame {
 
 	private JFileChooser fileChooser;
 	private Preferences prefs;
+	
+	//keeps track of the visibility of the panels.
 	private boolean regVisible = false;
 	private boolean tableVisible = false;
-
 	private boolean editMemberVisible = false;
 	private boolean demographyVisible = false;
 
@@ -101,53 +103,24 @@ public class Hoved extends JFrame {
 		toolbar.setWindowChange(new WindowChange() {
 			public void setWindow(String text) {
 				
-				/*
-				 * switch case to handle panel display
+				
+				 // switch case to handle panel display
 				switch(text) {
 					
 				case "menu": 
+					removePanels();
+					break;
 				case "reg":
-				case "table":
-				case "statistics":
-				}
-				*/
-				if (text.equals("menu")) {
-					if (demographyVisible == true) {
-						remove(demography);
-						demographyVisible = false;
-					}
-					if (tableVisible == true) {
-						remove(tablepanel);
-						tableVisible = false;
-					}
-					if (regVisible == true) {
-						remove(reg);
-						regVisible = false;
-					}
-					if (editMemberVisible == true) {
-						remove(editPanel);
-						editMemberVisible = false;
-					}
-
-					revalidate();
-					repaint();
-
-				} else if (text.equals("reg")) {
 					showReg();
-
-				} else if (text.equals("table")) {
+					break;
+				case "table":
 					showTable();
-					/*
-					 * report writes out information on all Medlem to the
-					 * console. this is a debug and must be removed on launch
-					 * TODO
-					 */
-				} else if (text.equals("report")) {
-					controller.report();
-
-				} else if (text.equals("statistics")) {
+					break;
+				case "statistics":
 					showDemography();
+					break;
 				}
+				
 
 			}
 		});
@@ -225,6 +198,7 @@ public class Hoved extends JFrame {
 				demography.setMedlemTotal(controller.getMedlemAntall());
 			}
 		});
+		
 
 		/*
 		 * initial startup panels
@@ -285,28 +259,6 @@ public class Hoved extends JFrame {
 	}
 
 	private void connect() {
-
-		/*
-		 * this progressbar is fucked.
-		 * 
-		 * the dialogwindow is made, but the progressbar won't be added/made
-		 * until after a connection can't be made.
-		 * 
-		 * a new worker must be made.
-		 */
-
-		/*
-		 * 
-		 * JDialog loading = new JDialog(); JPanel panel2 = new JPanel ( new
-		 * BorderLayout () ); panel2.setBorder ( BorderFactory.createEmptyBorder
-		 * ( 15, 15, 15, 15 ) ); loading.add ( panel2 );
-		 * 
-		 * JProgressBar progressBar = new JProgressBar ();
-		 * progressBar.setIndeterminate(true); panel2.add ( progressBar );
-		 * 
-		 * loading.repaint(); loading.revalidate(); loading.pack();
-		 * loading.setVisible(true); loading.setLocationRelativeTo (this);
-		 */
 
 		try {
 
@@ -404,7 +356,7 @@ public class Hoved extends JFrame {
 	}
 
 	/*
-	 * showDemography vill first remove all other panels as it requires the
+	 * showDemography will first remove all other panels as it requires the
 	 * entire panel for now, demography is dynamic and even if another panel
 	 * were to be shown west or east. north or south would warp the content too
 	 * much.
@@ -456,6 +408,13 @@ public class Hoved extends JFrame {
 		}
 		repaint();
 		revalidate();
+	}
+	
+	public void hidePanel(JPanel panel) {
+		remove(panel);
+		panel.setVisible(false);
+		
+		
 	}
 
 	/*
