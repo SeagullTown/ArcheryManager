@@ -70,7 +70,7 @@ public class Database {
 		medlemsListe = new LinkedList<Medlem>();
 		kontingentListe = new LinkedList<Kontingent>();
 		
-		
+		//TODO: these arrays will be put in a database table.
 		medlemsAntall = new double[][]{{2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015},{93,92,105,86,88,101,78,80,90,90,78,102}};
 		
 		stotteMedlemAntall = new double[][]{{2009,2010,2011,2012,2013,2014,2015},{0,0,0,0,0,0,0}};
@@ -115,6 +115,7 @@ public class Database {
 	
 
 	public void connect() throws Exception {
+		System.out.println("trying to connect");
 		if (firstStart) {
 			JPanel panel = new JPanel();
 			panel.setLayout(new GridLayout(3, 2));
@@ -143,6 +144,7 @@ public class Database {
 				dataSource.setUrl("jdbc:mysql://" + urlField.getText());
 				dataSource.setUsername(userField.getText());
 				dataSource.setPassword(new String(passField.getPassword()));
+				System.out.println("here 1");
 			} else if(option == 1) {
 				System.out.println("connection data cancelled");
 			}
@@ -332,8 +334,10 @@ public class Database {
 		
 		} catch (SQLException e) {
 			System.out.println("failed to connect");
+			e.printStackTrace();
 		} catch (NullPointerException e1) {
 			System.out.println("nullpointer exception after failing to load database.");
+			e1.printStackTrace();
 		}
 		
 		

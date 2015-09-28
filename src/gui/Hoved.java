@@ -505,6 +505,8 @@ public class Hoved extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					connect();
+					System.out.println("connected");
+					System.out.println("trying to load");
 					controller.load();
 					tablepanel.refresh();
 					demography.refreshData();

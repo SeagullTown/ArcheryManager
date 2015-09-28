@@ -380,7 +380,8 @@ public class Reg extends JPanel {
 
 			}
 		});
-
+		
+		/*
 		fDateField.addPropertyChangeListener(new PropertyChangeListener() {
 
 			@Override
@@ -405,6 +406,7 @@ public class Reg extends JPanel {
 
 			}
 		});
+		*/
 		
 		postNrField.addPropertyChangeListener(new PropertyChangeListener() {
 			

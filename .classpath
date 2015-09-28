@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.34-bin.jar"/>
 	<classpathentry kind="lib" path="E:/Programmer/Eclipse/resources/jfreechart-1.0.19/lib/jcommon-1.0.23.jar"/>
 	<classpathentry kind="lib" path="E:/Programmer/Eclipse/resources/jfreechart-1.0.19/lib/jfreechart-1.0.19.jar"/>
 	<classpathentry kind="lib" path="E:/Programmer/Eclipse/resources/jfreechart-1.0.19/lib/jfreechart-1.0.19-swt.jar"/>
@@ -9,5 +8,6 @@
 	<classpathentry kind="lib" path="E:/Programmer/Eclipse/resources/commons-dbcp2-2.1.1/commons-dbcp2-2.1.1.jar"/>
 	<classpathentry kind="lib" path="E:/Programmer/Eclipse/resources/commons-logging-1.2/commons-logging-1.2.jar"/>
 	<classpathentry kind="lib" path="E:/Programmer/Eclipse/resources/commons-pool2-2.4.2/commons-pool2-2.4.2.jar"/>
+	<classpathentry kind="lib" path="E:/Programmer/Eclipse/resources/mysql-connector-java-5.1.34-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
