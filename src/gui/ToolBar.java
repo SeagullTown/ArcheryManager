@@ -18,6 +18,7 @@ public class ToolBar extends JPanel{
 	private JButton tableButton;
 	private JButton demographyButton;
 	private JButton reportButton;
+	private JButton statisticsButton;
 	
 	public ToolBar() {
 		setBorder(BorderFactory.createEtchedBorder());
@@ -28,6 +29,7 @@ public class ToolBar extends JPanel{
 		tableButton = new JButton("Tabell");
 		demographyButton = new JButton("Demografi");
 		reportButton = new JButton ("Report");
+		statisticsButton = new JButton("Statistikk");
 		
 		
 		
@@ -40,6 +42,7 @@ public class ToolBar extends JPanel{
 		demographyButton.setBackground(Color.GRAY);
 		regButton.setBackground(Color.GRAY);
 		reportButton.setBackground(Color.GRAY);
+		statisticsButton.setBackground(Color.GRAY);
 		
 		/*
 		 * 
@@ -57,8 +60,7 @@ public class ToolBar extends JPanel{
 					change.setWindow("menu");
 				}
 			}		
-		});
-		
+		});	
 		regButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {	
 				if( change != null) {
@@ -78,19 +80,27 @@ public class ToolBar extends JPanel{
 			
 			public void actionPerformed(ActionEvent e) {
 				if(change != null) {
-					change.setWindow("statistics");
+					change.setWindow("demography");
 				}
 				
 			}
 			
 		});
-		
-		
 		reportButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if( change != null) {
 					change.setWindow("report");
 				}
+			}
+		});
+		statisticsButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(change != null) {
+					change.setWindow("statistics");
+				}
+				
 			}
 		});
 		
@@ -101,6 +111,7 @@ public class ToolBar extends JPanel{
 		add(regButton);
 		add(tableButton);
 		add(demographyButton);
+		add(statisticsButton);
 		//add(reportButton);
 		
 	}

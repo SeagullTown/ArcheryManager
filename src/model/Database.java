@@ -564,4 +564,8 @@ public class Database {
 		}
 		
 	}
+	public List<Medlem> getStatisticsMembers() {
+		// TODO retrieve a list from database for the members who are being tracked statistically.
+		return null;
+	}
 }

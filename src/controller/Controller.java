@@ -201,4 +201,8 @@ public class Controller {
 		return db.getJrMenn();
 	}
 
+	public List<Medlem> getStatisticsMembers() {
+		return db.getStatisticsMembers();
+	}
+
 }

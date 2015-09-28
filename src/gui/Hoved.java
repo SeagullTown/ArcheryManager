@@ -38,13 +38,19 @@ import controller.Controller;
  */
 
 public class Hoved extends JFrame {
-
+	
+	//Disables/enables features for debugging purposes.
+	public boolean debug = true;
+	
+	//panels
 	private ToolBar toolbar;
 	private Reg reg;
 	private TablePanel tablepanel;
 	private EditMember editPanel;
-	private Statistics demography;
-
+	private Demography demography;
+	private Statistics statistics;
+	
+	//utilities
 	private JFileChooser fileChooser;
 	private Preferences prefs;
 	
@@ -53,6 +59,7 @@ public class Hoved extends JFrame {
 	private boolean tableVisible = false;
 	private boolean editMemberVisible = false;
 	private boolean demographyVisible = false;
+	private boolean statisticsVisible = false;
 
 	private Controller controller;
 
@@ -78,16 +85,22 @@ public class Hoved extends JFrame {
 		toolbar = new ToolBar();
 		reg = new Reg();
 		tablepanel = new TablePanel();
+		statistics = new Statistics(debug);
 
 		setJMenuBar(createMenuBar());
 		prefs = Preferences.userRoot().node("click");
 		controller = new Controller();
-
+		
+		/*
+		 * filling the statistics table. 
+		 */
+		statistics.setData(controller.getStatisticsMembers());
+		
 		/*
 		 * filling the members table.
 		 */
 		tablepanel.setData(controller.getMedlemmer());
-		demography = new Statistics(controller.getMedlemTall(), controller.getMedlemStotte(), controller.getMedlemAntall(),
+		demography = new Demography(controller.getMedlemTall(), controller.getMedlemStotte(), controller.getMedlemAntall(),
 				controller.getSrKvinner(), controller.getSrMenn(), controller.getJrKvinner(), controller.getJrMenn());
 		/*
 		 * initializing utilities.
@@ -116,8 +129,11 @@ public class Hoved extends JFrame {
 				case "table":
 					showTable();
 					break;
-				case "statistics":
+				case "demography":
 					showDemography();
+					break;
+				case "statistics":
+					showStatistics();
 					break;
 				}
 				
@@ -209,6 +225,9 @@ public class Hoved extends JFrame {
 		setToolbar();
 		showTable();
 		tableVisible = true;
+		//showStatistics();
+		//statisticsVisible = true;
+		
 		/*
 		 * handles the closing of the application by disposing and running the
 		 * garbagecollector.
@@ -219,11 +238,15 @@ public class Hoved extends JFrame {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				try {
-					controller.save();
-				} catch (SQLException e1) {
-					e1.printStackTrace();
+				
+				if(!debug) {
+					try {
+						controller.save();
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
 				}
+				
 				// controller.disconnect();
 				prefs.put("x", Integer.toString(getX()));
 				prefs.put("y", Integer.toString(getY()));
@@ -283,6 +306,10 @@ public class Hoved extends JFrame {
 			remove(demography);
 			demographyVisible = false;
 		}
+		if (statisticsVisible == true) {
+			remove(statistics);
+			statisticsVisible = false;
+		}
 		if (regVisible == true) {
 			remove(reg);
 			regVisible = false;
@@ -309,6 +336,11 @@ public class Hoved extends JFrame {
 			remove(demography);
 			demographyVisible = false;
 		}
+		if (statisticsVisible == true) {
+			remove(statistics);
+			statisticsVisible = false;
+		}
+		//check itself
 		if (tableVisible == true) {
 			remove(tablepanel);
 			tableVisible = false;
@@ -332,12 +364,15 @@ public class Hoved extends JFrame {
 			remove(demography);
 			demographyVisible = false;
 		}
-
+		if (statisticsVisible == true) {
+			remove(statistics);
+			statisticsVisible = false;
+		}
 		if (regVisible == true) {
 			remove(reg);
 			regVisible = false;
 		}
-
+		
 		member = controller.getMedlemmer().get(row);
 
 		editPanel = new EditMember(member);
@@ -374,12 +409,48 @@ public class Hoved extends JFrame {
 			remove(tablepanel);
 			tableVisible = false;
 		}
+		if (statisticsVisible == true) {
+			remove(statistics);
+			statisticsVisible = false;
+		}
+		//check itself
 		if (demographyVisible == true) {
 			remove(demography);
 			demographyVisible = false;
 		} else {
 			add(demography, BorderLayout.CENTER);
 			demographyVisible = true;
+		}
+
+		revalidate();
+		repaint();
+	}
+	
+	public void showStatistics() {
+		if (regVisible == true) {
+			remove(reg);
+			regVisible = false;
+		}
+		if (editMemberVisible == true) {
+			remove(editPanel);
+			editMemberVisible = false;
+		}
+		if (tableVisible == true) {
+			remove(tablepanel);
+			tableVisible = false;
+		}
+		if (demographyVisible == true) {
+			remove(demography);
+			demographyVisible = false;
+		}
+		
+		//check itself
+		if (statisticsVisible == true) {
+			remove(statistics);
+			statisticsVisible = false;
+		} else {
+			add(statistics, BorderLayout.CENTER);
+			statisticsVisible = true;
 		}
 
 		revalidate();
@@ -405,6 +476,10 @@ public class Hoved extends JFrame {
 		if (editMemberVisible == true) {
 			remove(editPanel);
 			editMemberVisible = false;
+		}
+		if (statisticsVisible == true) {
+			remove(statistics);
+			statisticsVisible = false;
 		}
 		repaint();
 		revalidate();
@@ -505,8 +580,6 @@ public class Hoved extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					connect();
-					System.out.println("connected");
-					System.out.println("trying to load");
 					controller.load();
 					tablepanel.refresh();
 					demography.refreshData();
