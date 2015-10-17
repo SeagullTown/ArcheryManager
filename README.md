@@ -1,4 +1,4 @@
-# ArcheryManager
+# SportsManager
 management of a sportsclub or similar. 
 
 used to store members to a database and viewing the databasevisually with a table and dynamic graphics 
